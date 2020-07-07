@@ -4,7 +4,7 @@ module SpreeMailSettings
     isolate_namespace Spree
     engine_name 'spree_mail_settings'
 
-    def self.activate
+    initializer 'loading decorators', after: :load_config_initializers do |_app|
       Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
@@ -15,7 +15,5 @@ module SpreeMailSettings
       Spree::Core::MailSettings.init
       Mail.register_interceptor(Spree::Core::MailInterceptor)
     end
-
-    config.to_prepare(&method(:activate).to_proc)
   end
 end
